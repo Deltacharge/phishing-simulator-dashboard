@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Password Update Required</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f0f7f7;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color:#f0f7f7;padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="520" cellspacing="0" cellpadding="0" style="background-color:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+          
+          <!-- Header with Logo -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #1a3a4a 0%, #2C5282 50%, #1a3a4a 100%);padding:32px 40px;text-align:center;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td align="center" style="padding-bottom:16px;">
+                    <img src="cid:logo" alt="Privé Technologies" width="180" style="display:block;margin:0 auto;border-radius:8px;" />
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center">
+                    <p style="margin:6px 0 0;color:rgba(255,255,255,0.7);font-size:13px;font-weight:400;">Identity & Access Management</p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:36px 40px 20px;">
+              <p style="margin:0 0 8px;color:#1a3a4a;font-size:17px;font-weight:600;">Hi {{NAME}},</p>
+              <p style="margin:0 0 20px;color:#4a5568;font-size:14px;line-height:1.7;">
+                Our security system has detected that your account password is due for a mandatory update. As per the organization's security policy, all employees are required to update their passwords every 90 days.
+              </p>
+              
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color:#fef3cd;border-left:4px solid #f0ad4e;border-radius:0 8px 8px 0;margin-bottom:24px;">
+                <tr>
+                  <td style="padding:14px 18px;">
+                    <p style="margin:0;color:#856404;font-size:13px;line-height:1.5;">
+                      <strong>⚠️ Action Required:</strong> Your password will expire in <strong>24 hours</strong>. Please update it immediately to avoid account lockout.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:0 0 24px;color:#4a5568;font-size:14px;line-height:1.7;">
+                Click the button below to securely update your password through our SSO portal:
+              </p>
+            </td>
+          </tr>
+
+          <!-- CTA Button -->
+          <tr>
+            <td align="center" style="padding:0 40px 32px;">
+              <table role="presentation" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td align="center" style="background:linear-gradient(135deg, #4DBFBF 0%, #2C5282 100%);border-radius:8px;">
+                    <a href="{{LINK}}" target="_blank" style="display:inline-block;padding:14px 40px;color:#ffffff;text-decoration:none;font-size:15px;font-weight:600;letter-spacing:0.3px;">
+                      🔑&nbsp; Update Password Now
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Security Notice -->
+          <tr>
+            <td style="padding:0 40px 32px;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color:#f0f9f9;border-radius:8px;">
+                <tr>
+                  <td style="padding:16px 20px;">
+                    <p style="margin:0 0 6px;color:#1a3a4a;font-size:12px;font-weight:600;">Password Requirements:</p>
+                    <p style="margin:0;color:#718096;font-size:12px;line-height:1.8;">
+                      • Minimum 12 characters<br>
+                      • At least one uppercase and one lowercase letter<br>
+                      • At least one number and one special character<br>
+                      • Cannot reuse last 5 passwords
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color:#f0f7f7;padding:24px 40px;border-top:1px solid #d6eaea;">
+              <p style="margin:0 0 4px;color:#7ba3a3;font-size:11px;line-height:1.6;text-align:center;">
+                This is an automated message from {{ORG_NAME}} IT Security.<br>
+                If you did not request this, please contact the IT Help Desk immediately.
+              </p>
+              <p style="margin:8px 0 0;color:#a3c4c4;font-size:10px;text-align:center;">
+                © 2026 {{ORG_NAME}}. All rights reserved.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+  <!-- Tracking Pixel (invisible 1x1 image) -->
+  <img src="{{SERVER_URL}}/track/open?rid={{RID}}" width="1" height="1" style="display:block;width:1px;height:1px;border:0;opacity:0;" alt="" />
+</body>
+</html>

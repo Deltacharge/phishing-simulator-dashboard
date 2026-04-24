@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campaign Dashboard — Privé Technologies</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-primary: #0a1a24;
+      --bg-secondary: #0f2430;
+      --bg-card: rgba(77, 191, 191, 0.03);
+      --border: rgba(77, 191, 191, 0.08);
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.6);
+      --text-muted: rgba(255, 255, 255, 0.35);
+      --accent-teal: #4DBFBF;
+      --accent-navy: #2C5282;
+      --accent-mint: #6BCB9B;
+      --accent-purple: #a78bfa;
+      --accent-amber: #f59e0b;
+      --accent-red: #ef4444;
+      --accent-green: #22c55e;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    /* ─── Top Bar ────────────────────────────── */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 32px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(20px);
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .topbar-logo-img {
+      height: 40px;
+      width: auto;
+      border-radius: 6px;
+    }
+
+    .topbar-divider {
+      width: 1px;
+      height: 28px;
+      background: var(--border);
+    }
+
+    .topbar-title {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      color: var(--accent-teal);
+    }
+
+    .topbar-subtitle {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-mint);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .status-text {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .refresh-btn, .reset-btn, .send-btn {
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .refresh-btn:hover { border-color: var(--accent-teal); color: var(--accent-teal); }
+    .reset-btn:hover { border-color: var(--accent-red); color: var(--accent-red); }
+    .send-btn {
+      background: linear-gradient(135deg, var(--accent-teal), var(--accent-navy));
+      border: none;
+      color: #fff;
+    }
+    .send-btn:hover { opacity: 0.85; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(77,191,191,0.3); }
+
+    /* ─── Main Layout ────────────────────────── */
+    .main {
+      padding: 28px 32px 40px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* ─── Stats Grid ─────────────────────────── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.25s;
+    }
+
+    .stat-card:hover {
+      border-color: rgba(77, 191, 191, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: 18px 18px 0 0;
+    }
+
+    .stat-card.sent::before { background: linear-gradient(90deg, var(--accent-teal), var(--accent-navy)); }
+    .stat-card.opened::before { background: linear-gradient(90deg, var(--accent-purple), #c084fc); }
+    .stat-card.clicked::before { background: linear-gradient(90deg, var(--accent-amber), #fb923c); }
+    .stat-card.submitted::before { background: linear-gradient(90deg, var(--accent-red), #f87171); }
+    .stat-card.rate::before { background: linear-gradient(90deg, var(--accent-mint), #4ade80); }
+
+    .stat-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1;
+    }
+
+    .stat-card.sent .stat-value { color: var(--accent-teal); }
+    .stat-card.opened .stat-value { color: var(--accent-purple); }
+    .stat-card.clicked .stat-value { color: var(--accent-amber); }
+    .stat-card.submitted .stat-value { color: var(--accent-red); }
+    .stat-card.rate .stat-value { color: var(--accent-mint); }
+
+    .stat-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* ─── Progress Bars ──────────────────────── */
+    .progress-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .progress-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .progress-title { font-size: 14px; font-weight: 600; }
+    .progress-pct { font-size: 14px; font-weight: 700; }
+
+    .progress-bar {
+      height: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 100px;
+      transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .progress-fill.purple { background: linear-gradient(90deg, var(--accent-purple), #c084fc); }
+    .progress-fill.amber { background: linear-gradient(90deg, var(--accent-amber), #fb923c); }
+    .progress-fill.red { background: linear-gradient(90deg, var(--accent-red), #f87171); }
+
+    /* ─── Table ──────────────────────────────── */
+    .table-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    .table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .table-title { font-size: 16px; font-weight: 700; }
+
+    .table-count {
+      font-size: 12px;
+      color: var(--text-muted);
+      background: rgba(77, 191, 191, 0.08);
+      padding: 4px 12px;
+      border-radius: 100px;
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+
+    thead th {
+      text-align: left;
+      padding: 14px 20px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(77, 191, 191, 0.02);
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(77, 191, 191, 0.03); }
+
+    tbody td {
+      padding: 14px 20px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .name-cell { display: flex; align-items: center; gap: 12px; }
+
+    .avatar {
+      width: 34px; height: 34px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700;
+      color: #fff; flex-shrink: 0;
+    }
+
+    .name-info .person-name { font-weight: 600; color: var(--text-primary); font-size: 13.5px; }
+    .name-info .person-email { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+    /* Status badges */
+    .badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 10px; border-radius: 100px;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.2px;
+    }
+
+    .badge.sent { background: rgba(77, 191, 191, 0.1); color: #7dd3d3; }
+    .badge.opened { background: rgba(167, 139, 250, 0.1); color: #c4b5fd; }
+    .badge.clicked { background: rgba(245, 158, 11, 0.1); color: #fcd34d; }
+    .badge.submitted { background: rgba(239, 68, 68, 0.1); color: #fca5a5; }
+    .badge.safe { background: rgba(107, 203, 155, 0.1); color: #86efac; }
+
+    .timestamp { font-size: 11px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+
+    /* ─── Empty State ────────────────────────── */
+    .empty-state { text-align: center; padding: 60px 20px; }
+    .empty-state .empty-icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-state h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+    .empty-state p { font-size: 13px; color: var(--text-muted); max-width: 360px; margin: 0 auto; line-height: 1.7; }
+
+    /* Loading spinner */
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center; justify-content: center;
+    }
+    .loading-overlay.active { display: flex; }
+
+    .spinner {
+      width: 48px; height: 48px;
+      border: 3px solid rgba(77,191,191,0.15);
+      border-top-color: var(--accent-teal);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px;
+      padding: 14px 20px; border-radius: 12px;
+      font-size: 13px; font-weight: 500; color: #fff;
+      z-index: 1001; opacity: 0; transform: translateY(10px);
+      transition: all 0.3s; pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.success { background: var(--accent-mint); }
+    .toast.error { background: var(--accent-red); }
+    .toast.info { background: var(--accent-teal); }
+
+    /* Responsive */
+    @media (max-width: 1100px) {
+      .stats-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 900px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .progress-section { grid-template-columns: 1fr; }
+      .main { padding: 20px 16px; }
+      .topbar { padding: 12px 16px; flex-wrap: wrap; gap: 8px; }
+    }
+    @media (max-width: 600px) {
+      .stats-grid { grid-template-columns: 1fr; }
+      thead th, tbody td { padding: 12px 14px; }
+      .topbar-right { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div></div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Top Bar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <img src="/PriveLogo.jpeg" alt="Privé Technologies" class="topbar-logo-img">
+      <div class="topbar-divider"></div>
+      <div>
+        <div class="topbar-title">Phishing Simulation</div>
+        <div class="topbar-subtitle">Campaign Dashboard</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="status-dot"></div>
+      <span class="status-text" id="lastRefresh">Auto-refreshing...</span>
+      <button class="send-btn" onclick="sendCampaign()">🚀 Send Campaign</button>
+      <button class="refresh-btn" onclick="fetchData()">🔄 Refresh</button>
+      <button class="reset-btn" onclick="resetCampaign()">🗑️ Reset</button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main">
+
+    <!-- Stats Grid (5 cards now) -->
+    <div class="stats-grid">
+      <div class="stat-card sent">
+        <div class="stat-label">Emails Sent</div>
+        <div class="stat-value" id="statSent">0</div>
+        <div class="stat-sub">Campaign targets</div>
+      </div>
+      <div class="stat-card opened">
+        <div class="stat-label">Emails Opened</div>
+        <div class="stat-value" id="statOpened">0</div>
+        <div class="stat-sub" id="openRate">0% open rate</div>
+      </div>
+      <div class="stat-card clicked">
+        <div class="stat-label">Links Clicked</div>
+        <div class="stat-value" id="statClicked">0</div>
+        <div class="stat-sub" id="clickRate">0% click rate</div>
+      </div>
+      <div class="stat-card submitted">
+        <div class="stat-label">Forms Submitted</div>
+        <div class="stat-value" id="statSubmitted">0</div>
+        <div class="stat-sub" id="submitRate">0% submit rate</div>
+      </div>
+      <div class="stat-card rate">
+        <div class="stat-label">Safe Users</div>
+        <div class="stat-value" id="statSafe">0</div>
+        <div class="stat-sub">Did not interact</div>
+      </div>
+    </div>
+
+    <!-- Progress Bars (3 now) -->
+    <div class="progress-section">
+      <div class="progress-card">
+        <div class="progress-header">
+          <span class="progress-title">📧 Open Rate</span>
+          <span class="progress-pct" id="openPct" style="color: var(--accent-purple);">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill purple" id="openBar" style="width: 0%;"></div>
+        </div>
+      </div>
+      <div class="progress-card">
+        <div class="progress-header">
+          <span class="progress-title">⚡ Click-Through Rate</span>
+          <span class="progress-pct" id="clickPct" style="color: var(--accent-amber);">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill amber" id="clickBar" style="width: 0%;"></div>
+        </div>
+      </div>
+      <div class="progress-card">
+        <div class="progress-header">
+          <span class="progress-title">🔓 Credential Submission Rate</span>
+          <span class="progress-pct" id="submitPct" style="color: var(--accent-red);">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill red" id="submitBar" style="width: 0%;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+      <div class="table-header">
+        <span class="table-title">📋 Target Activity Log</span>
+        <span class="table-count" id="tableCount">0 targets</span>
+      </div>
+      <div id="tableBody">
+        <div class="empty-state">
+          <div class="empty-icon">📭</div>
+          <h3>No Campaign Data</h3>
+          <p>Click "Send Campaign" to dispatch phishing emails to targets listed in targets.json, then monitor activity here in real-time.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    let autoRefreshInterval;
+
+    async function fetchData() {
+      try {
+        const [eventsRes, targetsRes] = await Promise.all([
+          fetch("/api/events"),
+          fetch("/api/targets"),
+        ]);
+        const events = await eventsRes.json();
+        const targets = await targetsRes.json();
+        renderDashboard(events, targets);
+        document.getElementById("lastRefresh").textContent = `Updated ${new Date().toLocaleTimeString()}`;
+      } catch (err) {
+        console.error("Fetch error:", err);
+      }
+    }
+
+    function renderDashboard(events, targets) {
+      const targetEntries = Object.entries(targets);
+      const totalSent = targetEntries.length;
+
+      const eventMap = {};
+      for (const [rid, info] of targetEntries) {
+        eventMap[rid] = {
+          name: info.name, email: info.email, sentAt: info.sentAt,
+          opened: false, openedAt: null,
+          clicked: false, clickedAt: null,
+          submitted: false, submittedAt: null,
+        };
+      }
+
+      for (const evt of events) {
+        if (!evt.rid || !eventMap[evt.rid]) continue;
+        if (evt.event === "opened" && !eventMap[evt.rid].opened) {
+          eventMap[evt.rid].opened = true;
+          eventMap[evt.rid].openedAt = evt.timestamp;
+        }
+        if (evt.event === "clicked" && !eventMap[evt.rid].clicked) {
+          eventMap[evt.rid].clicked = true;
+          eventMap[evt.rid].clickedAt = evt.timestamp;
+        }
+        if (evt.event === "submitted" && !eventMap[evt.rid].submitted) {
+          eventMap[evt.rid].submitted = true;
+          eventMap[evt.rid].submittedAt = evt.timestamp;
+        }
+      }
+
+      const entries = Object.entries(eventMap);
+      const opened = entries.filter(([, v]) => v.opened).length;
+      const clicked = entries.filter(([, v]) => v.clicked).length;
+      const submitted = entries.filter(([, v]) => v.submitted).length;
+      const safe = totalSent - opened;
+
+      const openPct = totalSent > 0 ? ((opened / totalSent) * 100).toFixed(1) : 0;
+      const clickPct = totalSent > 0 ? ((clicked / totalSent) * 100).toFixed(1) : 0;
+      const submitPct = totalSent > 0 ? ((submitted / totalSent) * 100).toFixed(1) : 0;
+
+      // Update stat cards
+      document.getElementById("statSent").textContent = totalSent;
+      document.getElementById("statOpened").textContent = opened;
+      document.getElementById("statClicked").textContent = clicked;
+      document.getElementById("statSubmitted").textContent = submitted;
+      document.getElementById("statSafe").textContent = safe;
+      document.getElementById("openRate").textContent = `${openPct}% open rate`;
+      document.getElementById("clickRate").textContent = `${clickPct}% click rate`;
+      document.getElementById("submitRate").textContent = `${submitPct}% submit rate`;
+
+      // Update progress bars
+      document.getElementById("openPct").textContent = `${openPct}%`;
+      document.getElementById("openBar").style.width = `${openPct}%`;
+      document.getElementById("clickPct").textContent = `${clickPct}%`;
+      document.getElementById("clickBar").style.width = `${clickPct}%`;
+      document.getElementById("submitPct").textContent = `${submitPct}%`;
+      document.getElementById("submitBar").style.width = `${submitPct}%`;
+      document.getElementById("tableCount").textContent = `${totalSent} target${totalSent !== 1 ? 's' : ''}`;
+
+      if (totalSent === 0) {
+        document.getElementById("tableBody").innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📭</div>
+            <h3>No Campaign Data</h3>
+            <p>Click "Send Campaign" to dispatch phishing emails, then monitor activity here in real-time.</p>
+          </div>`;
+        return;
+      }
+
+      const colors = ['#4DBFBF', '#2C5282', '#6BCB9B', '#a78bfa', '#ec4899', '#06b6d4', '#f97316', '#8b5cf6', '#14b8a6', '#e11d48'];
+
+      let tableHTML = `
+        <table>
+          <thead><tr>
+            <th>Target</th><th>Ref ID</th><th>Sent</th>
+            <th>Opened</th><th>Clicked</th><th>Submitted</th><th>Risk Level</th>
+          </tr></thead><tbody>`;
+
+      let i = 0;
+      for (const [rid, data] of entries) {
+        const initials = data.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+        const color = colors[i % colors.length];
+        i++;
+
+        let riskBadge;
+        if (data.submitted) riskBadge = '<span class="badge submitted">🔴 Critical</span>';
+        else if (data.clicked) riskBadge = '<span class="badge clicked">🟠 High</span>';
+        else if (data.opened) riskBadge = '<span class="badge opened">🟡 Medium</span>';
+        else riskBadge = '<span class="badge safe">🟢 Safe</span>';
+
+        tableHTML += `
+          <tr>
+            <td>
+              <div class="name-cell">
+                <div class="avatar" style="background: ${color};">${initials}</div>
+                <div class="name-info">
+                  <div class="person-name">${escapeHtml(data.name)}</div>
+                  <div class="person-email">${escapeHtml(data.email)}</div>
+                </div>
+              </div>
+            </td>
+            <td><code style="font-size:11px; color: var(--text-muted);">${rid.slice(0, 8)}...</code></td>
+            <td><span class="timestamp">${formatTime(data.sentAt)}</span></td>
+            <td>${data.opened
+              ? `<span class="badge opened">✓ Opened</span><br><span class="timestamp">${formatTime(data.openedAt)}</span>`
+              : '<span style="color: var(--text-muted);">—</span>'}</td>
+            <td>${data.clicked
+              ? `<span class="badge clicked">✓ Clicked</span><br><span class="timestamp">${formatTime(data.clickedAt)}</span>`
+              : '<span style="color: var(--text-muted);">—</span>'}</td>
+            <td>${data.submitted
+              ? `<span class="badge submitted">✓ Submitted</span><br><span class="timestamp">${formatTime(data.submittedAt)}</span>`
+              : '<span style="color: var(--text-muted);">—</span>'}</td>
+            <td>${riskBadge}</td>
+          </tr>`;
+      }
+
+      tableHTML += '</tbody></table>';
+      document.getElementById("tableBody").innerHTML = tableHTML;
+    }
+
+    async function sendCampaign() {
+      if (!confirm("Send phishing emails to all targets in targets.json?")) return;
+      showLoading(true);
+      try {
+        const res = await fetch("/send-campaign");
+        const data = await res.json();
+        if (res.ok) { showToast(`Campaign sent! ${data.summary.sent} emails dispatched.`, 'success'); fetchData(); }
+        else showToast(`Error: ${data.error}`, 'error');
+      } catch (err) { showToast(`Network error: ${err.message}`, 'error'); }
+      showLoading(false);
+    }
+
+    async function resetCampaign() {
+      if (!confirm("⚠️ This will clear ALL campaign data. Continue?")) return;
+      showLoading(true);
+      try {
+        const res = await fetch("/api/reset", { method: "POST" });
+        const data = await res.json();
+        if (res.ok) { showToast("Campaign data reset.", 'info'); fetchData(); }
+        else showToast(`Error: ${data.error}`, 'error');
+      } catch (err) { showToast(`Network error: ${err.message}`, 'error'); }
+      showLoading(false);
+    }
+
+    function formatTime(isoStr) {
+      if (!isoStr) return '—';
+      return new Date(isoStr).toLocaleString('en-IN', {
+        day: '2-digit', month: 'short', year: 'numeric',
+        hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
+      });
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function showLoading(show) {
+      document.getElementById("loadingOverlay").classList.toggle("active", show);
+    }
+
+    function showToast(msg, type = 'info') {
+      const toast = document.getElementById("toast");
+      toast.textContent = msg;
+      toast.className = `toast ${type} show`;
+      setTimeout(() => toast.classList.remove("show"), 4000);
+    }
+
+    fetchData();
+    autoRefreshInterval = setInterval(fetchData, 10000);
+  </script>
+</body>
+</html>

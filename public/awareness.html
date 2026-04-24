@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Awareness — Phishing Simulation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0f0c29 0%, #1a1a2e 40%, #16213e 100%);
+      color: #ffffff;
+      padding: 20px;
+    }
+
+    .awareness-container {
+      max-width: 640px;
+      width: 100%;
+    }
+
+    .awareness-card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(40px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 48px 44px;
+      box-shadow: 0 32px 64px rgba(0, 0, 0, 0.3);
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Header */
+    .header-icon {
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      margin: 0 auto 24px;
+      box-shadow: 0 8px 24px rgba(245, 158, 11, 0.3);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 14px;
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+
+    /* Info Box */
+    .info-box {
+      background: rgba(59, 130, 246, 0.08);
+      border: 1px solid rgba(59, 130, 246, 0.15);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+
+    .info-box h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #93c5fd;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .info-box p {
+      font-size: 13.5px;
+      color: rgba(255, 255, 255, 0.6);
+      line-height: 1.8;
+    }
+
+    /* Tips Section */
+    .tips-section {
+      margin-bottom: 32px;
+    }
+
+    .tips-section h2 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tip-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      transition: all 0.25s ease;
+    }
+
+    .tip-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.1);
+      transform: translateX(4px);
+    }
+
+    .tip-num {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .tip-content h4 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #e2e8f0;
+    }
+
+    .tip-content p {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.45);
+      line-height: 1.6;
+    }
+
+    /* Red Flags Section */
+    .red-flags {
+      background: rgba(239, 68, 68, 0.06);
+      border: 1px solid rgba(239, 68, 68, 0.12);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+
+    .red-flags h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #fca5a5;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .flag-list {
+      list-style: none;
+    }
+
+    .flag-list li {
+      font-size: 13.5px;
+      color: rgba(255, 255, 255, 0.55);
+      padding: 6px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      line-height: 1.5;
+    }
+
+    .flag-list li::before {
+      content: '🚩';
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    /* Footer */
+    .card-footer {
+      text-align: center;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .card-footer p {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.3);
+      line-height: 1.7;
+    }
+
+    .card-footer .badge {
+      display: inline-block;
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+      color: #86efac;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 100px;
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="awareness-container">
+    <div class="awareness-card">
+
+      <div class="header-icon">🛡️</div>
+      <h1>This Was a Phishing Simulation</h1>
+      <p class="subtitle">Don't worry — no data was compromised. This exercise was conducted by your organization's security team to raise awareness about phishing threats.</p>
+
+      <!-- Explanation -->
+      <div class="info-box">
+        <h3>ℹ️ What just happened?</h3>
+        <p>You received a simulated phishing email that asked you to update your password. The email was designed to mimic real-world phishing attempts. By clicking the link and/or entering your credentials, you demonstrated how easy it can be to fall for these attacks. <strong>No passwords were recorded or stored.</strong></p>
+      </div>
+
+      <!-- Tips -->
+      <div class="tips-section">
+        <h2>🧠 How to Protect Yourself</h2>
+
+        <div class="tip-card">
+          <div class="tip-num">1</div>
+          <div class="tip-content">
+            <h4>Verify the sender's email address</h4>
+            <p>Always check the actual email address, not just the display name. Attackers often use similar-looking domains.</p>
+          </div>
+        </div>
+
+        <div class="tip-card">
+          <div class="tip-num">2</div>
+          <div class="tip-content">
+            <h4>Don't click links in urgent emails</h4>
+            <p>Phishing emails create urgency ("your password will expire in 24 hours"). Navigate to the site directly instead of clicking email links.</p>
+          </div>
+        </div>
+
+        <div class="tip-card">
+          <div class="tip-num">3</div>
+          <div class="tip-content">
+            <h4>Check the URL before entering credentials</h4>
+            <p>Always verify you're on the correct domain before typing your username or password. Look for HTTPS and the correct company domain.</p>
+          </div>
+        </div>
+
+        <div class="tip-card">
+          <div class="tip-num">4</div>
+          <div class="tip-content">
+            <h4>Enable Multi-Factor Authentication (MFA)</h4>
+            <p>Even if your password is compromised, MFA adds an extra layer of protection that can prevent unauthorized access.</p>
+          </div>
+        </div>
+
+        <div class="tip-card">
+          <div class="tip-num">5</div>
+          <div class="tip-content">
+            <h4>Report suspicious emails</h4>
+            <p>When in doubt, report the email to your IT security team. It's always better to be cautious than compromised.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Red Flags -->
+      <div class="red-flags">
+        <h3>🚨 Red Flags in the Email You Received</h3>
+        <ul class="flag-list">
+          <li>Urgency and fear tactics ("password will expire in 24 hours")</li>
+          <li>Generic greeting or mismatched sender identity</li>
+          <li>Link URL doesn't match the official company domain</li>
+          <li>Request to enter credentials on an external page</li>
+          <li>Threat of account lockout to pressure immediate action</li>
+        </ul>
+      </div>
+
+      <!-- Footer -->
+      <div class="card-footer">
+        <div class="badge">✓ SIMULATION COMPLETE</div>
+        <p>This simulation was authorized and conducted as part of your organization's security awareness program. If you have questions, please contact your IT Security team.</p>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>
